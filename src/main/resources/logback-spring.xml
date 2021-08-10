@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+        <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+<property name="LOGS" value="./logs" />
+
+<appender name="Console"
+          class="ch.qos.logback.core.ConsoleAppender">
+
+
+     <layout class="ch.qos.logback.classic.PatternLayout">
+     <pattern>%clr(%d{HH:mm:ss.SSS}){cyan} %clr([%thread]){yellow} [%highlight(%-4level)] %white(-) %clr(%msg){magenta} %cyan(%-30.30logger{30}) %n</pattern>
+
+     </layout>
+ </appender>
+
+
+ <!-- LOG everything at INFO level -->
+<root level="info">
+    <appender-ref ref="Console" />
+</root>
+
+<!-- LOG "com." at TRACE level -->
+<logger name="com.example.demo" level="DeBug" additivity="false">
+    <appender-ref ref="Console" />
+</logger>
+
+</configuration>

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis1
+  labels:
+    app: redis1
+spec:
+  clusterIP: {{ .Values.db.clusterIPRedis }}
+  type: NodePort
+  selector:
+    app: redis1
+  ports:
+    - protocol: TCP
+      port: {{ .Values.db.ports.REDIS_PORT }}
+      nodePort: 30899

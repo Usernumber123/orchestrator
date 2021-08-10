@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: main-deployment
+spec:
+  selector:
+    matchLabels:
+      app: main
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: main #Service looks here
+    spec:
+      containers:
+        - env:
+            - name: CLUSTER_IP_POSTGRES
+              value: "{{ .Values.db.clusterIPPostgres }}"
+            - name: POSTGRES_PORT
+              value: "{{ .Values.db.ports.POSTGRES_PORT }}"
+            - name: REDIS_PORT
+              value: "{{ .Values.db.ports.REDIS_PORT }}"
+            - name: KAFKA_HOST
+              value: "kafka-cp-kafka:9092"
+            - name: CLUSTER_IP_REDIS
+              value: "{{ .Values.db.clusterIPRedis }}"
+            - name: SERVER_PORT
+              value: "{{ .Values.portMain }}"
+          name: main-deployment
+          image: main1:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: {{ .Values.portMain }} #Port on Pod
+---
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: main-autoscaling
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v2beta1v1
+    kind: Deployment
+    name:  main-deployment
+  minReplicas: 3
+  maxReplicas: 6
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: 80
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: 80

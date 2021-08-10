@@ -1,0 +1,179 @@
+openapi: 3.0.2
+info:
+  title: Mesage interface
+  description: This interface provides registration controll messages
+  version: 0.1.9
+servers:
+  - url: '{protocol}://{server}:{port}'
+    description: Optional server description, e.g. Main (production) server
+paths:
+  "/token":
+    post:
+      tags:
+        - Auth
+      operationId: "token"
+      summary: Token
+      description: Token for User
+      requestBody:
+        $ref: '#/components/requestBodies/UserDto'
+
+      responses:
+        '200':
+          description: Token For user
+          content:
+            application/json:
+              schema:
+                type: "string"
+  "/sign-up":
+    post:
+      tags:
+        - Auth
+      operationId: "sign-up"
+      summary: sign-up
+      description: sign-up User
+      requestBody:
+        $ref: '#/components/requestBodies/UserDto'
+
+      responses:
+        '200':
+          description: sign-up user
+          content:
+            application/json:
+              schema:
+                type: "string"
+  "/msg":
+      post:
+          tags:
+            - Msg
+          operationId: "send Message"
+          summary: Send Message
+          description: Send Message on Correction
+          requestBody:
+            $ref: '#/components/requestBodies/MessageDto'
+
+          responses:
+            '200':
+              description: Msg
+      get:
+        tags:
+          - Msg
+        operationId: "get All Cache Messages"
+        summary: get All Cache Messages
+        description: get Message after Correction
+
+        responses:
+          "200":
+            description: Accepted
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/MessageDto"
+  "/censor":
+    post:
+      tags:
+        - Censor
+      operationId: "Censor Word"
+      summary: Censor Word
+      description: Censor Word for Message on Correction
+      requestBody:
+        $ref: '#/components/requestBodies/WordDto'
+      responses:
+        '200':
+          description: Msg
+    delete:
+      tags:
+        - Censor
+      operationId: "Censor Word Delete"
+      summary: Censor Word Delete
+      description: Censor delete Word for Message on Correction
+      requestBody:
+          $ref: '#/components/requestBodies/WordDto'
+      responses:
+        '200':
+          description: Msg
+
+
+
+
+
+components:
+
+  requestBodies:
+    UserDto:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UserDto'
+          examples:
+            eventParametersExample:
+              $ref: '#/components/examples/UserDto'
+      required: true
+      description: Event creation parameters
+    MessageDto:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MessageDto'
+          examples:
+            eventParametersExample:
+              $ref: '#/components/examples/MessageDto'
+      required: true
+      description: Event creation parameters
+    WordDto:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/WordDto'
+          examples:
+            eventParametersExample:
+              $ref: '#/components/examples/WordDto'
+      required: true
+      description: Event creation parameters
+  schemas:
+    UserDto: # Schema name
+      type: object
+      properties:
+        login:
+          type: string
+        password:
+          type: string
+      example: # Object-level example
+        login: BigBOy
+        password: Terminator111
+    MessageDto: # Schema name
+      type: object
+      properties:
+        author:
+          type: string
+        message:
+          type: string
+        dateAndTime:
+          type: string
+      example: # Object-level example
+        login: BigBOy
+        password: Terminator111
+    WordDto:
+      type: object
+      properties:
+        age:
+          type: integer
+        forbiddenWord:
+          type: string
+      example: # Object-level example
+        age: 12
+        forbiddenWord: "Terminator"
+  examples:
+    UserDto:
+      value:
+        login: BigBOy
+        password: Terminator111
+    MessageDto:
+      value:
+        author: BigBOy
+        message: My password Terminator111
+    WordDto:
+      value:
+        age: 12
+        forbiddenWord: "Terminate"

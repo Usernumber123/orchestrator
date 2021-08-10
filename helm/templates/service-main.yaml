@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: main-service
+  labels:
+    app: main
+spec:
+  selector:
+    app: main #Selecting Pods whith those label
+  ports:
+    - protocol: TCP
+      port: {{ .Values.portMain }} #Port LoadBalancer
+  type: LoadBalancer

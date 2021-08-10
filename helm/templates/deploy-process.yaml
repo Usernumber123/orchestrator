@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: process-deployment
+  labels:
+    app : process-label
+spec:
+  selector:
+    matchLabels:
+      project: kafka
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        project: kafka
+    spec:
+      containers:
+        - env:
+            - name: CLUSTER_IP_POSTGRES
+              value: "{{ .Values.db.clusterIPPostgres }}"
+            - name: POSTGRES_PORT
+              value: "{{ .Values.db.ports.POSTGRES_PORT }}"
+            - name: KAFKA_HOST
+              value: "kafka-cp-kafka:9092"
+            - name: SERVER_PORT
+              value: "{{ .Values.portProcess }}"
+          name: process-contener
+          image: proc:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: {{ .Values.portProcess }}
+---
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: process-autoscaling
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v2beta1v1
+    kind: Deployment
+    name:  process-deployment
+  minReplicas: 3
+  maxReplicas: 6
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: 80
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: 80

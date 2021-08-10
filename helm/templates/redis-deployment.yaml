@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis1-deployment
+spec:
+  selector:
+    matchLabels:
+      app: redis1
+  template:
+    metadata:
+      labels:
+        app: redis1
+    spec:
+      containers:
+        - env:
+            - name: REDIS_PASS
+              value: '**None**'
+          image: tutum/redis
+          ports:
+            - containerPort: 6379
+          name: redis1
+      restartPolicy: Always
