@@ -139,6 +139,8 @@ components:
           type: string
         password:
           type: string
+        age:
+          type: integer
       example: # Object-level example
         login: BigBOy
         password: Terminator111
@@ -147,6 +149,8 @@ components:
       properties:
         author:
           type: string
+        age:
+          type: integer
         message:
           type: string
         dateAndTime:

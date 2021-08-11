@@ -22,6 +22,8 @@ public class User {
     private Long id;
     @Column(name = "password")
     private String password;
+    @Column(name = "age")
+    private Integer age;
     @Column(name = "role")
     private String Role="USER";
 

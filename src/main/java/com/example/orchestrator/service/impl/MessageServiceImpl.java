@@ -20,6 +20,7 @@ import org.springframework.util.concurrent.ListenableFuture;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -33,8 +34,9 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public void sendMessage(MessageDto messageDto) {
+        UserDetailsImpl principal = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        messageDto.age(principal.getUser().getAge());
 
-        log.debug("Send MSG");
         setAuthor(messageDto);
 
         setDataTime(messageDto);
@@ -46,6 +48,12 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public List<MessageDto> getAllMessages() {
         List<Message> messages = new ArrayList<>(messageRepository.findAll());
+        boolean flag = messages.isEmpty();
+        messages.removeAll(Collections.singleton(null));
+        if (!flag)
+            if (messages.isEmpty())
+                messageRepository.deleteAll();
+        System.out.println(messages.isEmpty());
         log.info("FIND {}", messages);
         List<MessageDto> messageDtos = new ArrayList<>();
         for (Message message : messages)
@@ -57,25 +65,25 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public void receivedMessage(ConsumerRecord<String, String> messageReceived) {
         Message message = new Gson().fromJson(messageReceived.value(), Message.class);
+
         messageRepository.save(message);
     }
 
-    private MessageDto setAuthor(MessageDto messageDto) {
+    private void setAuthor(MessageDto messageDto) {
         UserDetailsImpl principal = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (!principal.getAuthorities().toArray()[0].toString().equals("ADMIN")) {
             messageDto.setAuthor(principal.getUsername());
         }
-        return messageDto;
     }
 
-    private MessageDto setDataTime(MessageDto messageDto) {
+    private void setDataTime(MessageDto messageDto) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
         String strLocalDate =LocalDateTime.now().withNano(0).toString();
 
             LocalDateTime localDate = LocalDateTime.parse(strLocalDate, formatter);
             messageDto.setDateAndTime(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(localDate));
-            return messageDto;
 
     }
+
 
 }

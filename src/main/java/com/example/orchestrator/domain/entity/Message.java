@@ -12,7 +12,6 @@ import javax.persistence.Id;
 import java.io.Serializable;
 
 @RedisHash("Message")
-@TypeAlias("Message")
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -21,6 +20,7 @@ public class Message implements Serializable {
     @Id
     private String id;
     private String author;
+    private Integer age;
     private String censoredMessage;
     private String dateAndTime;
     @TimeToLive

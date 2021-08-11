@@ -17,7 +17,7 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 
 @Slf4j
 @Configuration
-@EnableRedisRepositories(enableKeyspaceEvents = RedisKeyValueAdapter.EnableKeyspaceEvents.ON_STARTUP)
+//@EnableRedisRepositories(enableKeyspaceEvents = RedisKeyValueAdapter.EnableKeyspaceEvents.ON_STARTUP)
 public class RedisCacheConfigurationCustom {
     @Value("${spring.redis.host}")
     private String host;

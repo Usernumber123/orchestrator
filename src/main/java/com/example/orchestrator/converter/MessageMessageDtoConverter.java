@@ -13,6 +13,7 @@ public class MessageMessageDtoConverter implements Converter<Message, MessageDto
     public MessageDto convert(Message message) {
         MessageDto messageDto = new MessageDto();
         messageDto.setMessage(message.getCensoredMessage());
+        messageDto.setAge(message.getAge());
         messageDto.setDateAndTime(message.getDateAndTime());
         messageDto.setAuthor(message.getAuthor());
         return messageDto;
