@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>demo</artifactId>
+	<artifactId>orchestrator</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>demo</name>
+	<name>orchestrator</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>11</java.version>
@@ -128,6 +128,7 @@
 
 	<build>
 		<plugins>
+
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
@@ -156,12 +157,12 @@
 							<inputSpec>${project.basedir}/src/static/openapi/api.yaml</inputSpec>
 							<output>${project.build.directory}/generated-sources/openapi</output>
 							<generatorName>spring</generatorName>
-							<apiPackage>com.example.main.api</apiPackage>
-							<modelPackage>com.example.main.model</modelPackage>
+							<apiPackage>com.example.orchestrator.api</apiPackage>
+							<modelPackage>com.example.orchestrator.model</modelPackage>
 							<generateApiTests>false</generateApiTests>
 							<generateModelTests>false</generateModelTests>
 							<configOptions>
-								<sourceFolder>src/main/java</sourceFolder>
+								<sourceFolder>src/orchestrator/java</sourceFolder>
 								<useTags>true</useTags>
 								<interfaceOnly>true</interfaceOnly>
 								<java8>true</java8>
