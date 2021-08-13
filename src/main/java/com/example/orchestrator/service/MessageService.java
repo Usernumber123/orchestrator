@@ -8,6 +8,5 @@ import java.util.List;
 public interface MessageService {
     void sendMessage(MessageDto msg);
     List<MessageDto> getAllMessages();
-
     void receivedMessage(ConsumerRecord<String, String> messageReceived);
 }
