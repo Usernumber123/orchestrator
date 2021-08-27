@@ -41,40 +41,126 @@ paths:
             application/json:
               schema:
                 type: "string"
-  "/msg":
-      post:
-          tags:
-            - Msg
-          operationId: "send Message"
-          summary: Send Message
-          description: Send Message on Correction
-          requestBody:
-            $ref: '#/components/requestBodies/MessageDto'
+  "/create/{chat}":
+    parameters:
+      - name: chat
+        in: path
+        description: chat
+        required: true
+        schema:
+          type: string
+    post:
+      tags:
+        - createChat
+      operationId: "createChat"
+      summary: create Chat
+      description: chat
+      parameters:
+        - name: age
+          in: query
+          description: age
+          required: true
+          schema:
+            type: integer
 
-          responses:
-            '200':
-              description: Msg
-      get:
-        tags:
-          - Msg
-        operationId: "get All Cache Messages"
-        summary: get All Cache Messages
-        description: get Message after Correction
+      responses:
+        '200':
+          description: chat
+  "/addUserInChat/{chat}":
+    parameters:
+      - name: chat
+        in: path
+        description: chat
+        required: true
+        schema:
+          type: string
+    post:
+      tags:
+        - AddUserAtChat
+      operationId: "AddUserAtChat"
+      summary: Add User At Chat
+      description: chat
+      parameters:
+        - name: userLogin
+          in: query
+          description: user login
+          schema:
+            type: string
+      responses:
+        '200':
+          description: chat
+  "/msg/{chat}":
+    parameters:
+      - name: chat
+        in: path
+        description: user chat
+        required: true
+        schema:
+          type: string
+    post:
+      tags:
+        - Msg
+      operationId: "sendToChatMessage"
+      summary: Send Message
+      description: Send Message on Correction
+      requestBody:
+        $ref: '#/components/requestBodies/MessageDto'
 
-        responses:
-          "200":
-            description: Accepted
-            content:
-              application/json:
-                schema:
-                  type: array
-                  items:
-                    $ref: "#/components/schemas/MessageDto"
+      responses:
+        '200':
+          description: Msg
+    get:
+      tags:
+        - Msg
+      operationId: "get All Cache Messages From Chat Or Find By Author"
+      summary: get All Cache Messages
+      description: get Message after Correction
+      parameters:
+        - name: author
+          in: query
+          description: user login
+          schema:
+            type: string
+
+      responses:
+        "200":
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MessageDto"
+  "/checkChat":
+    get:
+      tags:
+        - Check
+      operationId: " Check User Consists In Chat"
+      summary: Check User Consists In Chat
+      description: Check User Consists In Chat
+      parameters:
+        - name: chatName
+          in: query
+          description: chat name
+          schema:
+            type: string
+        - name: userLogin
+          in: query
+          description: UserLogin
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: User have a chat
+        '403':
+          description: User dont have a chat
+
   "/censor":
     post:
       tags:
         - Censor
-      operationId: "Censor Word"
+      operationId: "Censor WordCreate"
       summary: Censor Word
       description: Censor Word for Message on Correction
       requestBody:
@@ -89,7 +175,7 @@ paths:
       summary: Censor Word Delete
       description: Censor delete Word for Message on Correction
       requestBody:
-          $ref: '#/components/requestBodies/WordDto'
+        $ref: '#/components/requestBodies/WordDto'
       responses:
         '200':
           description: Msg
@@ -141,7 +227,11 @@ components:
           type: string
         age:
           type: integer
-      example: # Object-level example
+      required:
+        - login
+        - password
+        - age
+      example: # Object-level efimov
         login: BigBOy
         password: Terminator111
     MessageDto: # Schema name
@@ -155,17 +245,27 @@ components:
           type: string
         dateAndTime:
           type: string
-      example: # Object-level example
+        chat:
+          type: string
+      required:
+        - message
+      example: # Object-level efimov
         login: BigBOy
         password: Terminator111
     WordDto:
       type: object
       properties:
+        chat:
+          type: string
         age:
           type: integer
         forbiddenWord:
           type: string
-      example: # Object-level example
+      required:
+        - chat
+        - age
+        - forbiddenWord
+      example: # Object-level efimov
         age: 12
         forbiddenWord: "Terminator"
   examples:

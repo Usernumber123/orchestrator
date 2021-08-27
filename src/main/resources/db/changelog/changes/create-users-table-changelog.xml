@@ -7,16 +7,29 @@
     http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
     <changeSet author="admin" id="1">
         <createTable tableName="users">
-            <column autoIncrement="true" name="id" type="BIGINT">
+            <column name="id" type="VARCHAR(255)">
                 <constraints primaryKey="true"/>
+
             </column>
-            <column name="login" type="VARCHAR(255)"/>
-            <column name="password" type="VARCHAR(255)"/>
-            <column name="age" type="INT"/>
+            <column name="login" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="age" type="INT">
+                <constraints nullable="false"/>
+            </column>
             <column name="role" type="VARCHAR(255)"/>
         </createTable>
         <rollback>
             <dropTable tableName="users"/>
         </rollback>
+        <addUniqueConstraint
+                columnNames="login"
+                constraintName="login"
+                tableName="users"
+        />
     </changeSet>
+
 </databaseChangeLog>
