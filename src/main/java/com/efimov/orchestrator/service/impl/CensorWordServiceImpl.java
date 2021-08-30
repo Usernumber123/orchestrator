@@ -51,5 +51,4 @@ public class CensorWordServiceImpl implements CensorWordService {
             }
         } else throw new ChatNotFoundException("Chat does not exists");
     }
-
 }

@@ -18,6 +18,7 @@ import java.util.HashSet;
 @RequiredArgsConstructor
 public class AuthService {
     public static final String CHAT_ALL = "all";
+    public static final String AUTH = "auth";
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenService tokenService;
@@ -42,13 +43,15 @@ public class AuthService {
         Chat chat = chatRepository.findOneByName(CHAT_ALL).orElseThrow();
         chats.add(chat);
         user.setJoinChats(chats);
+
         userRepository.save(user);
         user.setJoinChats(null);
         UserDto userDto = new UserDto();
         userDto.setLogin(signUpDto.getLogin());
+
         userDto.setAge(signUpDto.getAge());
         userDto.setPassword(signUpDto.getPassword());
-        kafkaTemplate.send("auth", user);
+        kafkaTemplate.send(AUTH, user);
         return generateToken(userDto);
     }
 }

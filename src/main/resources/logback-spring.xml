@@ -8,8 +8,7 @@
 
 
         <layout class="ch.qos.logback.classic.PatternLayout">
-            <pattern>%clr(%d{HH:mm:ss.SSS}){cyan} %clr([%thread]){yellow} [%highlight(%-4level)] %white(-)
-                %clr(%msg){magenta} %cyan(%-30.30logger{30}) %n
+            <pattern>%clr(%d{HH:mm:ss.SSS}){cyan} %clr([%thread]){yellow} [%highlight(%-4level)] %white(-) %clr(%msg){magenta} %cyan(%-30.30logger{30}) %n
             </pattern>
 
         </layout>

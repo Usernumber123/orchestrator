@@ -27,6 +27,7 @@ public class ProducerMessagesServiceImpl implements ProducerMessagesService {
 
         UserDetailsImpl principal = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userRepository.findOneByLogin(principal.getUser().getLogin()).orElseThrow();
+        boolean flag=true;
         if (!user.getJoinChats().isEmpty()) {
             for (Chat chat : new ArrayList<>(user.getJoinChats())) {
                 if (chat.getName().equals(chatName)) {
@@ -34,13 +35,14 @@ public class ProducerMessagesServiceImpl implements ProducerMessagesService {
                     setAuthor(messageDto);
                     setAge(messageDto);
                     setDataTime(messageDto);
-
+                    flag=false;
                     kafkaTemplate.send(MESSAGE_FOR_CENSURED_TOPIC, messageDto);
                     kafkaTemplate.flush();
                 }
             }
 
         }
+        if(flag)
         throw new ChatNotFoundException("User does not have this chat");
     }
 

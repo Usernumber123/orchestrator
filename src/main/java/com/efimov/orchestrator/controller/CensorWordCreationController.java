@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-public class CensorWordController implements CensorApi {
+public class CensorWordCreationController implements CensorApi {
     private final CensorWordService censorWordService;
 
     @Override

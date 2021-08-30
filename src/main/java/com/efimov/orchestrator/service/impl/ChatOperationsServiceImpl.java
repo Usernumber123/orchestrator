@@ -9,6 +9,8 @@ import com.efimov.orchestrator.repository.UserRepository;
 import com.efimov.orchestrator.security.UserDetailsImpl;
 import com.efimov.orchestrator.service.ChatOperationsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -44,11 +46,13 @@ public class ChatOperationsServiceImpl implements ChatOperationsService {
 
     private void addUserInChat(String userLogin, String chatName) {
         User user = userRepository.findOneByLogin(userLogin).orElseThrow();
-        Chat chat = chatRepository.findOneByName(chatName).orElseThrow();
-        if (user.getAge() >= chat.getAge()) {
-            user.getJoinChats().add(chat);
-            userRepository.save(user);
-        } else throw new UserDoesNotHaveAccess("User too young");
+       if( validationUserAlreadyContainsInChat(user,chatName)) {
+           Chat chat = chatRepository.findOneByName(chatName).orElseThrow();
+           if (user.getAge() >= chat.getAge()) {
+               user.getJoinChats().add(chat);
+               userRepository.save(user);
+           } else throw new UserDoesNotHaveAccess("User too young");
+       }else throw new ChatNotFoundException("In this chat User already exist");
     }
 
     @Override
@@ -73,5 +77,13 @@ public class ChatOperationsServiceImpl implements ChatOperationsService {
             }
         }
         throw new ChatNotFoundException("Principal User does not consists in this chat");
+    }
+    private boolean validationUserAlreadyContainsInChat(User user, String chatName){
+        if (!user.getJoinChats().isEmpty()) {
+            for (Chat chat : new ArrayList<>(user.getJoinChats())) {
+                if (chat.getName().equals(chatName)) return false;
+            }
+        }
+        return true;
     }
 }
