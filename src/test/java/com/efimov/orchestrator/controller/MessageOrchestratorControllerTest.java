@@ -38,7 +38,7 @@ class MessageOrchestratorControllerTest {
     public static final String ADMIN = "admin";
     public static final String CHAT = "chat";
     public static final String AGE = "age";
-    public static final String URL_TEMPLATE = "/create/{chat}";
+    public static final String URL_TEMPLATE = "/chat/{chat}";
     public static final String URL_TEMPLATE1 = "/msg/chat";
     public static final String URL_TEMPLATE2 = "/token";
     public static final String AUTHORIZATION = "Authorization";

@@ -13,7 +13,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
@@ -21,29 +20,22 @@ public class ProducerMessagesServiceImpl implements ProducerMessagesService {
     public static final String MESSAGE_FOR_CENSURED_TOPIC = "messageForCensuredTopic";
     private final KafkaTemplate<String, Object> kafkaTemplate;
     private final UserRepository userRepository;
+    private final CheckUserConsistsInChatImplService checkUserConsistsInChatImplService;
 
     @Override
     public void sendMessageInChatAndCensured(String chatName, MessageDto messageDto) {
 
         UserDetailsImpl principal = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = userRepository.findOneByLogin(principal.getUser().getLogin()).orElseThrow();
-        boolean flag=true;
-        if (!user.getJoinChats().isEmpty()) {
-            for (Chat chat : new ArrayList<>(user.getJoinChats())) {
-                if (chat.getName().equals(chatName)) {
-                    messageDto.setChat(chatName);
-                    setAuthor(messageDto);
-                    setAge(messageDto);
-                    setDataTime(messageDto);
-                    flag=false;
-                    kafkaTemplate.send(MESSAGE_FOR_CENSURED_TOPIC, messageDto);
-                    kafkaTemplate.flush();
-                }
-            }
+        if (checkUserConsistsInChatImplService.checkUserConsistsInChatBool(principal.getUser().getLogin(), chatName)) {
+            messageDto.setChat(chatName);
+            setAuthor(messageDto);
+            setAge(messageDto);
+            setDataTime(messageDto);
 
-        }
-        if(flag)
-        throw new ChatNotFoundException("User does not have this chat");
+            kafkaTemplate.send(MESSAGE_FOR_CENSURED_TOPIC, messageDto);
+            kafkaTemplate.flush();
+        } else
+            throw new ChatNotFoundException("User does not have this chat");
     }
 
 
@@ -54,7 +46,7 @@ public class ProducerMessagesServiceImpl implements ProducerMessagesService {
 
 
     private void setDataTime(MessageDto messageDto) {
-        String strLocalDate = LocalDateTime.now().withNano(0).toString();
+        String strLocalDate = LocalDateTime.now().toString();
         messageDto.setDateAndTime(strLocalDate.replace("T", " "));
     }
 

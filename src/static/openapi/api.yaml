@@ -41,7 +41,7 @@ paths:
             application/json:
               schema:
                 type: "string"
-  "/create/{chat}":
+  "/chat/{chat}":
     parameters:
       - name: chat
         in: path
@@ -51,7 +51,7 @@ paths:
           type: string
     post:
       tags:
-        - createChat
+        - Chat
       operationId: "createChat"
       summary: create Chat
       description: chat
@@ -66,7 +66,17 @@ paths:
       responses:
         '200':
           description: chat
-  "/addUserInChat/{chat}":
+    delete:
+      tags:
+        - Chat
+      operationId: "deleteChat"
+      summary: delete Chat
+      description: chat
+
+      responses:
+        '200':
+          description: delete chat
+  "/chat/{chat}/UsersInChat":
     parameters:
       - name: chat
         in: path
@@ -76,7 +86,7 @@ paths:
           type: string
     post:
       tags:
-        - AddUserAtChat
+        - UserAtChat
       operationId: "AddUserAtChat"
       summary: Add User At Chat
       description: chat
@@ -89,6 +99,21 @@ paths:
       responses:
         '200':
           description: chat
+    delete:
+      tags:
+        - UserAtChat
+      operationId: "deleteUserFromChat"
+      summary: Delete User From Chat
+      description: chat
+      parameters:
+        - name: userLogin
+          in: query
+          description: user login
+          schema:
+            type: string
+      responses:
+        '200':
+          description: delete user from chat
   "/msg/{chat}":
     parameters:
       - name: chat
@@ -156,7 +181,7 @@ paths:
         '403':
           description: User dont have a chat
 
-  "/censor":
+  "/word/censor":
     post:
       tags:
         - Censor

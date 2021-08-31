@@ -30,7 +30,12 @@ public class Chat {
     private Integer age;
     @Column(name = "host")
     private String host;
-    @ManyToMany
+    @ManyToMany(cascade = {
+            CascadeType.DETACH,
+            CascadeType.MERGE,
+            CascadeType.REFRESH,
+            CascadeType.PERSIST
+    } )
     @JoinTable(
             name = "users_chats_mtm",
             joinColumns = @JoinColumn(name = "chat_id"),

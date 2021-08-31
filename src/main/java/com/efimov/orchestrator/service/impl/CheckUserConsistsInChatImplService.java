@@ -17,16 +17,16 @@ import java.util.ArrayList;
 public class CheckUserConsistsInChatImplService implements CheckUserConsistsInChatService {
     private final UserRepository userRepository;
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+
     @Override
-    public ResponseEntity<Void> checkUserConsistsInChat(String chatName, String userLogin) {
+    public boolean checkUserConsistsInChatBool(String userLogin,String chatName) {
         User user = userRepository.findOneByLogin(userLogin).orElseThrow();
         if (!user.getJoinChats().isEmpty()) {
             for (Chat chat : new ArrayList<>(user.getJoinChats())) {
-                if (chat.getName().equals(chatName)) return new ResponseEntity<>(HttpStatus.OK);
+                if (chat.getName().equals(chatName)) return true;
             }
         }
-        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        return false;
 
     }
 }

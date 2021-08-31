@@ -30,7 +30,7 @@ public class User {
     private Integer age;
     @Column(name = "role")
     private String role = "USER";
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "users_chats_mtm",
             joinColumns = @JoinColumn(name = "user_id"),

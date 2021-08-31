@@ -8,6 +8,7 @@ import com.efimov.orchestrator.repository.ChatRepository;
 import com.efimov.orchestrator.repository.UserRepository;
 import com.efimov.orchestrator.security.UserDetailsImpl;
 import com.efimov.orchestrator.service.ChatOperationsService;
+import com.efimov.orchestrator.service.CheckUserConsistsInChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,16 @@ public class ChatOperationsServiceImpl implements ChatOperationsService {
     private final ChatRepository chatRepository;
 
     @Override
+    public void deleteChat(String chat){
+        UserDetailsImpl principal = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        try {
+            Chat chat1 = chatRepository.findOneByName(chat).orElseThrow();
+            if (chat1.getHost().equals(principal.getUser().getLogin())) {
+                chatRepository.deleteChatByName(chat);
+            } else throw new UserDoesNotHaveAccess("User is not the host of this chat");
+        }catch (NoSuchElementException e) {throw new NoSuchElementException("Chat not Found");}
+    }
+    @Override
     public void createChat(String chat, Integer age) {
         UserDetailsImpl principal = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Chat chat1 = new Chat();
@@ -36,54 +47,16 @@ public class ChatOperationsServiceImpl implements ChatOperationsService {
         } catch (Exception e) {
             throw new UserDoesNotHaveAccess("Chat already exist");
         }
-        try {
-            addUserInChat(principal.getUser().getLogin(), chat);
-        } catch (UserDoesNotHaveAccess userDoesNotHaveAccess) {
+
+        User user = userRepository.findOneByLogin(principal.getUser().getLogin()).orElseThrow();
+        Chat chat2 = chatRepository.findOneByName(chat).orElseThrow();
+        if (user.getAge() >= chat2.getAge()) {
+            user.getJoinChats().add(chat2);
+            userRepository.save(user);
+        } else {
             chatRepository.delete(chat1);
             throw new UserDoesNotHaveAccess("User too young");
         }
     }
 
-    private void addUserInChat(String userLogin, String chatName) {
-        User user = userRepository.findOneByLogin(userLogin).orElseThrow();
-       if( validationUserAlreadyContainsInChat(user,chatName)) {
-           Chat chat = chatRepository.findOneByName(chatName).orElseThrow();
-           if (user.getAge() >= chat.getAge()) {
-               user.getJoinChats().add(chat);
-               userRepository.save(user);
-           } else throw new UserDoesNotHaveAccess("User too young");
-       }else throw new ChatNotFoundException("In this chat User already exist");
-    }
-
-    @Override
-    public void addNewUsersInChat(String userLogin, String chatName) {
-
-        if (principalUserContainsInChat(chatName)) {
-            try {
-                addUserInChat(userLogin, chatName);
-
-            } catch (NoSuchElementException e) {
-                throw new NoSuchElementException("User not Found");
-            }
-        }
-    }
-
-    private boolean principalUserContainsInChat(String chatName) {
-        UserDetailsImpl principal = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = userRepository.findOneByLogin(principal.getUser().getLogin()).orElseThrow();
-        if (!user.getJoinChats().isEmpty()) {
-            for (Chat chat : new ArrayList<>(user.getJoinChats())) {
-                if (chat.getName().equals(chatName)) return true;
-            }
-        }
-        throw new ChatNotFoundException("Principal User does not consists in this chat");
-    }
-    private boolean validationUserAlreadyContainsInChat(User user, String chatName){
-        if (!user.getJoinChats().isEmpty()) {
-            for (Chat chat : new ArrayList<>(user.getJoinChats())) {
-                if (chat.getName().equals(chatName)) return false;
-            }
-        }
-        return true;
-    }
 }
