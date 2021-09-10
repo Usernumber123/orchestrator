@@ -8,9 +8,7 @@ import com.efimov.orchestrator.repository.ChatRepository;
 import com.efimov.orchestrator.security.UserDetailsImpl;
 import com.efimov.orchestrator.service.CensorWordService;
 import com.efimov.orchestrator.service.ProducerForbiddenWordsService;
-import com.efimov.orchestrator.service.ProducerMessagesService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 

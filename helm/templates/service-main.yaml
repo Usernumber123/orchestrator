@@ -5,6 +5,7 @@ metadata:
   labels:
     app: main
 spec:
+  clusterIP: {{ .Values.clusterIPOrc }}
   selector:
     app: main #Selecting Pods whith those label
   ports:

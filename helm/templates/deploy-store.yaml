@@ -5,6 +5,7 @@ metadata:
   labels:
     app : store
 spec:
+  replicas: 3
   selector:
     matchLabels:
       app: store
@@ -19,6 +20,8 @@ spec:
     spec:
         containers:
             - env:
+                - name: CLUSTER_IP_ORC
+                  value: "{{ .Values.clusterIPOrc }}"
                 - name: CLUSTER_IP_POSTGRES
                   value: "{{ .Values.db.clusterIPPostgres }}"
                 - name: POSTGRES_PORT
@@ -32,25 +35,3 @@ spec:
               imagePullPolicy: Never
               ports:
                 - containerPort: {{ .Values.portStore }} #Port on Pod
----
-apiVersion: autoscaling/v2beta1
-kind: HorizontalPodAutoscaler
-metadata:
-  name: store-autoscaling
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v2beta1v1
-    kind: Deployment
-    name:  store-deployment
-  minReplicas: 3
-  maxReplicas: 6
-  metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        targetAverageUtilization: 80
-    - type: Resource
-      resource:
-        name: memory
-        targetAverageUtilization: 80
-

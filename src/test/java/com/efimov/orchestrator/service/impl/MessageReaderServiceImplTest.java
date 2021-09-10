@@ -12,18 +12,16 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class MessageReaderServiceImplTest {
     MessageRepository messageRepository = mock(MessageRepository.class);
     private final UserRepository userRepository = mock(UserRepository.class);
     private final ConversionService conversionService = mock(ConversionService.class);
-    private final CheckUserConsistsInChatImplService checkUserConsistsInChatImplService = mock(CheckUserConsistsInChatImplService.class) ;
+    private final CheckUserPossibilitiesInChatImplService checkUserConsistsInChatImplService = mock(CheckUserPossibilitiesInChatImplService.class);
     SecurityContext securityContext = Mockito.mock(SecurityContext.class);
     Authentication authentication = Mockito.mock(Authentication.class);
     MessageReaderServiceImpl messageService = new MessageReaderServiceImpl(messageRepository, conversionService, checkUserConsistsInChatImplService);

@@ -174,6 +174,11 @@ paths:
           description: UserLogin
           schema:
             type: string
+        - name: host
+          in: query
+          description: rights host
+          schema:
+            type: string
 
       responses:
         '200':
@@ -282,16 +287,12 @@ components:
       properties:
         chat:
           type: string
-        age:
-          type: integer
         forbiddenWord:
           type: string
       required:
         - chat
-        - age
         - forbiddenWord
       example: # Object-level efimov
-        age: 12
         forbiddenWord: "Terminator"
   examples:
     UserDto:
@@ -304,5 +305,5 @@ components:
         message: My password Terminator111
     WordDto:
       value:
-        age: 12
+
         forbiddenWord: "Terminate"

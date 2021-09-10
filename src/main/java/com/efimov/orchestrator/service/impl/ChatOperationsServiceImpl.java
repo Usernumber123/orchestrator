@@ -2,20 +2,15 @@ package com.efimov.orchestrator.service.impl;
 
 import com.efimov.orchestrator.domain.entity.Chat;
 import com.efimov.orchestrator.domain.entity.User;
-import com.efimov.orchestrator.exceptions.ChatNotFoundException;
 import com.efimov.orchestrator.exceptions.UserDoesNotHaveAccess;
 import com.efimov.orchestrator.repository.ChatRepository;
 import com.efimov.orchestrator.repository.UserRepository;
 import com.efimov.orchestrator.security.UserDetailsImpl;
 import com.efimov.orchestrator.service.ChatOperationsService;
-import com.efimov.orchestrator.service.CheckUserConsistsInChatService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
 

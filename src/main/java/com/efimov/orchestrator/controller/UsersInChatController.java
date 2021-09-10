@@ -11,9 +11,16 @@ import org.springframework.stereotype.Controller;
 @RequiredArgsConstructor
 public class UsersInChatController implements UserAtChatApi {
     private final UsersInChatService usersInChatService;
+
     @Override
     public ResponseEntity<Void> addUserAtChat(String chat, String userLogin) {
         usersInChatService.addNewUsersInChat(userLogin, chat);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Void> deleteUserFromChat(String chat, String userLogin) {
+        usersInChatService.deleteUserFromChat(userLogin, chat);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

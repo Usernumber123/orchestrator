@@ -1,6 +1,7 @@
 portMain: 8081
 portStore: 8082
 portProcess: 8080
+clusterIPOrc: 10.111.231.218
 db:
   POSTGRES_DB: postg
   POSTGRES_DB_1: postg1
@@ -9,6 +10,7 @@ db:
   POSTGRES_PASSWORD: postgres
   clusterIPRedis: 10.104.171.234
   clusterIPPostgres: 10.111.205.15
+
 
   ports:
     REDIS_PORT: 6379

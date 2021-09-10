@@ -1,11 +1,11 @@
 package com.efimov.orchestrator.service.impl;
 
+import com.efimov.orchestrator.domain.entity.Message;
 import com.efimov.orchestrator.exceptions.ChatNotFoundException;
 import com.efimov.orchestrator.model.MessageDto;
+import com.efimov.orchestrator.repository.MessageRepository;
 import com.efimov.orchestrator.security.UserDetailsImpl;
 import com.efimov.orchestrator.service.MessageReaderService;
-import com.efimov.orchestrator.domain.entity.Message;
-import com.efimov.orchestrator.repository.MessageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,13 +26,13 @@ import java.util.Objects;
 public class MessageReaderServiceImpl implements MessageReaderService {
     private final MessageRepository messageRepository;
     private final ConversionService conversionService;
-    private final CheckUserConsistsInChatImplService checkUserConsistsInChatImplService;
+    private final CheckUserPossibilitiesInChatImplService checkUserConsistsInChatImplService;
 
 
     @Override
     public List<MessageDto> getAllMessagesFromChatOrFindByAuthor(String chat, String author) {
         UserDetailsImpl principal = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (checkUserConsistsInChatImplService.checkUserConsistsInChatBool(principal.getUser().getLogin(), chat)) {
+        if (checkUserConsistsInChatImplService.checkUserConsistsInChat(principal.getUser().getLogin(), chat)) {
             List<Message> messages = findParams(chat, author);
             boolean flag = messages.isEmpty();
             messages.removeAll(Collections.singleton(null));

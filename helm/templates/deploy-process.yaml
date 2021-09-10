@@ -5,6 +5,7 @@ metadata:
   labels:
     app : process-label
 spec:
+  replicas: 3
   selector:
     matchLabels:
       project: kafka
@@ -32,24 +33,3 @@ spec:
           imagePullPolicy: Never
           ports:
             - containerPort: {{ .Values.portProcess }}
----
-apiVersion: autoscaling/v2beta1
-kind: HorizontalPodAutoscaler
-metadata:
-  name: process-autoscaling
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v2beta1v1
-    kind: Deployment
-    name:  process-deployment
-  minReplicas: 3
-  maxReplicas: 6
-  metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        targetAverageUtilization: 80
-    - type: Resource
-      resource:
-        name: memory
-        targetAverageUtilization: 80

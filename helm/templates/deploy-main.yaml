@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: main-deployment
 spec:
+  replicas: 3
   selector:
     matchLabels:
       app: main
@@ -34,24 +35,3 @@ spec:
           imagePullPolicy: Never
           ports:
             - containerPort: {{ .Values.portMain }} #Port on Pod
----
-apiVersion: autoscaling/v2beta1
-kind: HorizontalPodAutoscaler
-metadata:
-  name: main-autoscaling
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v2beta1v1
-    kind: Deployment
-    name:  main-deployment
-  minReplicas: 3
-  maxReplicas: 6
-  metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        targetAverageUtilization: 80
-    - type: Resource
-      resource:
-        name: memory
-        targetAverageUtilization: 80

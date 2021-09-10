@@ -1,7 +1,6 @@
 package com.efimov.orchestrator.service.impl;
 
-import com.efimov.orchestrator.domain.entity.Chat;
-import com.efimov.orchestrator.domain.entity.User;
+
 import com.efimov.orchestrator.exceptions.ChatNotFoundException;
 import com.efimov.orchestrator.model.MessageDto;
 import com.efimov.orchestrator.repository.UserRepository;
@@ -20,13 +19,13 @@ public class ProducerMessagesServiceImpl implements ProducerMessagesService {
     public static final String MESSAGE_FOR_CENSURED_TOPIC = "messageForCensuredTopic";
     private final KafkaTemplate<String, Object> kafkaTemplate;
     private final UserRepository userRepository;
-    private final CheckUserConsistsInChatImplService checkUserConsistsInChatImplService;
+    private final CheckUserPossibilitiesInChatImplService checkUserConsistsInChatImplService;
 
     @Override
     public void sendMessageInChatAndCensured(String chatName, MessageDto messageDto) {
 
         UserDetailsImpl principal = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (checkUserConsistsInChatImplService.checkUserConsistsInChatBool(principal.getUser().getLogin(), chatName)) {
+        if (checkUserConsistsInChatImplService.checkUserConsistsInChat(principal.getUser().getLogin(), chatName)) {
             messageDto.setChat(chatName);
             setAuthor(messageDto);
             setAge(messageDto);
