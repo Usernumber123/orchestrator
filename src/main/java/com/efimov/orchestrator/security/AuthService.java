@@ -8,6 +8,7 @@ import com.efimov.orchestrator.repository.UserRepository;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,14 +16,13 @@ import org.springframework.stereotype.Service;
 import java.util.HashSet;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class AuthService {
     public static final String CHAT_ALL = "all";
-    public static final String AUTH = "auth";
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenService tokenService;
-    private final KafkaTemplate<String, Object> kafkaTemplate;
     private final ChatRepository chatRepository;
 
     public String generateToken(UserDto userDto) {
@@ -33,7 +33,6 @@ public class AuthService {
         return tokenService.generateToken(person);
     }
 
-    @SneakyThrows
     public String signUp(UserDto signUpDto) {
         User user = new User();
         user.setLogin(signUpDto.getLogin());
@@ -43,15 +42,17 @@ public class AuthService {
         Chat chat = chatRepository.findOneByName(CHAT_ALL).orElseThrow();
         chats.add(chat);
         user.setJoinChats(chats);
-
-        userRepository.save(user);
+        try {
+         userRepository.save(user);
+        }catch (Exception e){
+        log.error(e.getMessage());
+        }
         user.setJoinChats(null);
         UserDto userDto = new UserDto();
         userDto.setLogin(signUpDto.getLogin());
 
         userDto.setAge(signUpDto.getAge());
         userDto.setPassword(signUpDto.getPassword());
-        kafkaTemplate.send(AUTH, user);
         return generateToken(userDto);
     }
 }

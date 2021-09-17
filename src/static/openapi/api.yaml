@@ -185,6 +185,29 @@ paths:
           description: User have a chat
         '403':
           description: User dont have a chat
+    post:
+      tags:
+        - Check
+      operationId: " Check User Auth"
+      summary: Check User Auth
+      description: Check User Auth
+      parameters:
+        - name: userLogin
+          in: query
+          description: UserLogin
+          schema:
+            type: string
+        - name: host
+          in: query
+          description: rights host
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: User have a chat
+        '403':
+          description: User dont have a chat
 
   "/word/censor":
     post:

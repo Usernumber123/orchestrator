@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -15,6 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class CheckUserPossibilitiesInChatController implements CheckApi {
     private final CheckUserPossibilitiesInChatImplService checkUserPossibilitiesInChatImplService;
+
+    @Override
+    public ResponseEntity<Void> checkUserAuth(String userLogin, String host) {
+         return new ResponseEntity<>(HttpStatus.OK);
+    }
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @Override
@@ -29,4 +35,5 @@ public class CheckUserPossibilitiesInChatController implements CheckApi {
             else return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
     }
+
 }
